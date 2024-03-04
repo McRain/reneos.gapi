@@ -1,0 +1,29 @@
+{
+	"name": "@reneos/gapi",
+	"version": "0.1.0",
+	"description": "GraphQL Server API",
+	"main": "index.js",
+	"type": "module",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/McRain/reneos.gapi.git"
+	},
+	"keywords": [
+		"graphql"
+	],
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/McRain/reneos.gapi/issues"
+	},
+	"homepage": "https://github.com/McRain/reneos.gapi#readme",
+	"author": {
+		"name": "Viktor Abdulov",
+		"email": "dev@reneos.com"
+	},
+	"dependencies": {
+		"graphql": "^16.8.1"
+	}
+}

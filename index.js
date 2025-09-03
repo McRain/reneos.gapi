@@ -1,5 +1,5 @@
 import * as graphqlModule from "graphql"
-const { graphql, GraphQLSchema, GraphQLObjectType } =graphqlModule
+const { graphql, GraphQLSchema, GraphQLObjectType } = graphqlModule
 import * as Models from './models/index.js'
 
 let _schema, _queries = {}, _mutations = {}, _subscription = {}
@@ -18,18 +18,17 @@ class Api {
 	}
 
 	static Add(op, values) {
-		if(op.toLowerCase().startsWith('q'))
-		{
+		if (op.toLowerCase().startsWith('q')) {
 			_queries = {
 				..._queries,
 				...values
 			}
-		}else if(op.toLowerCase().startsWith('m')){
+		} else if (op.toLowerCase().startsWith('m')) {
 			_mutations = {
 				..._mutations,
 				...values
 			}
-		}else{
+		} else {
 			_subscription = {
 				..._subscription,
 				...values
@@ -37,44 +36,43 @@ class Api {
 		}
 	}
 
-	static async Exec(query,contextValue) {
+	static async Exec(query, contextValue) {
 		const dn = Date.now()
 		await Promise.all(_before.map(h => h(contextValue)))
 
-		//change in version 0.0.5
 		let result
 		try {
 			result = await graphql({
-				schema:_schema,
-				source:query,
+				schema: _schema,
+				source: query,
 				contextValue
 			})
 		} catch (e) {
 			result = {
-				errors:[e],
+				errors: [e],
 				data: {
 					error: { code: 500 }
 				}
 			}
 		}
-		if(result.errors){
+		if (result.errors) {
 			let code = 500
-			result.errors.forEach(er=>{
+			result.errors.forEach(er => {
 				const c = er.originalError?.code
-				console.warn(`${new Date().toLocaleString()} : ${er.path?er.path.join('.'):''} : (${c}) ${er.message}`)
+				console.warn(`${new Date().toLocaleString()} : ${er.path ? er.path.join('.') : ''} : (${c}) ${er.message}`)
 				code = c || 500
 			})
 			const last = result.errors.at(-1) || {}
 			result.data = {
-				error:{
-					code:code || 500,
-					message:last.message
+				error: {
+					code: code || 500,
+					message: last.message
 				}
 			}
 		}
 
 		//---END
-		
+
 		await Promise.all(_after.map(h => h(contextValue, result, dn)))
 		result.time = Date.now() - dn
 		return result
@@ -85,17 +83,17 @@ class Api {
 		if (!query)
 			return {}
 		const context = {
-			time:request.time || Date.now(), 
-			user:request.user || {}, 
-			ip:request.remoteIp,
-			request:{				
-				cookie:request.cookie
+			time: request.time || Date.now(),
+			user: request.user || {},
+			ip: request.remoteIp,
+			request: {
+				cookie: request.cookie
 			},
-			responce:{
-				cookie:responce.cookie
+			responce: {
+				cookie: responce.cookie
 			}
 		}
-		return Api.Exec(query,context )
+		return Api.Exec(query, context)
 	}
 
 	static BuildSchema() {
@@ -125,5 +123,5 @@ class Api {
 }
 
 const _before = [], _after = []
-export {graphqlModule as graphql}
-export { Api, Models}
+export { graphqlModule as graphql }
+export { Api, Models }

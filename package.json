@@ -1,8 +1,9 @@
 {
 	"name": "@reneos/gapi",
-	"version": "0.1.0",
+	"version": "0.1.3",
 	"description": "GraphQL Server API",
-	"main": "index.js",
+	"main": "index.cjs",
+	"module": "index.js",
 	"type": "module",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1"
@@ -24,6 +25,6 @@
 		"email": "dev@reneos.com"
 	},
 	"dependencies": {
-		"graphql": "^16.8.1"
+		"graphql": "16.11.0"
 	}
 }

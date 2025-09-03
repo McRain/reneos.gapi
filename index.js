@@ -1,17 +1,12 @@
-import { graphql, GraphQLSchema, GraphQLObjectType } from "graphql"
-
+import * as graphqlModule from "graphql"
+const { graphql, GraphQLSchema, GraphQLObjectType } =graphqlModule
 import * as Models from './models/index.js'
 
 let _schema, _queries = {}, _mutations = {}, _subscription = {}
 
 class Api {
-
 	static get Schema() {
 		return _schema
-	}
-
-	static CookieHandler(context, result) {
-		result.cookie = context.cookie
 	}
 
 	static PreHandler(handler) {
@@ -42,9 +37,8 @@ class Api {
 		}
 	}
 
-	static async Exec(query, time, user, ip) {
+	static async Exec(query,contextValue) {
 		const dn = Date.now()
-		const contextValue = { user, ip, time }
 		await Promise.all(_before.map(h => h(contextValue)))
 
 		//change in version 0.0.5
@@ -82,17 +76,26 @@ class Api {
 		//---END
 		
 		await Promise.all(_after.map(h => h(contextValue, result, dn)))
-		result.data.time = Date.now() - dn
+		result.time = Date.now() - dn
 		return result
 	}
 
-	static async Route(request, responce) {
+	static Route(request, responce) {
 		const query = request.body.query
 		if (!query)
 			return {}
-		const { data, cookie } = await Api.Exec(query, request.time || Date.now(), request.user || {}, request.remoteIp)
-		responce.cookie = cookie
-		return { data }
+		const context = {
+			time:request.time || Date.now(), 
+			user:request.user || {}, 
+			ip:request.remoteIp,
+			request:{				
+				cookie:request.cookie
+			},
+			responce:{
+				cookie:responce.cookie
+			}
+		}
+		return Api.Exec(query,context )
 	}
 
 	static BuildSchema() {
@@ -121,6 +124,6 @@ class Api {
 	}
 }
 
-const _before = [], _after = [Api.CookieHandler]
-
-export { Api, Models }
+const _before = [], _after = []
+export {graphqlModule as graphql}
+export { Api, Models}

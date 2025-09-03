@@ -1,6 +1,6 @@
 {
 	"name": "@reneos/gapi",
-	"version": "0.1.4",
+	"version": "0.1.5",
 	"description": "GraphQL Server API",
 	"main": "index.js",
 	"module": "index.js",
